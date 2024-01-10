@@ -82,7 +82,7 @@ for n,line in enumerate(fline):
 print(ancestor)
 
 outp = open(tag + ".prot.ancestors","a+")
-#outp.write("orf_id\tsp\tev_age\tsyn_age\tbranch\tTIS\tmaxORF\tconv\tseq\n")
+# outp.write("orf_id\tsp\tev_age\tsyn_age\tbranch\tTIS\tmaxORF\tconv\tseq\n")
 
 outh = open(tag + ".ancestors","a+")
 
@@ -99,21 +99,21 @@ blastp={}
 cons={}
 
 # perform blastp ORF peptide against the ortholog peptide sequences
-os.system("blastp -query " + fastap_orf + " -subject " + sys.argv[1].replace(".dnd",".prot.fas") + 
-		" -subject_besthit -outfmt \"6 qseqid sseqid pident length mismatch gapopen qstart qend qlen sstart send slen qcovs evalue bitscore\" >  " + 
-		fastap_orf.replace(".fa",".blastp.out"))
-# read blastp results
-for line in open(fastap_orf.replace(".fa",".blastp.out")):
-	sseqid = line.split("\t")[1]
-	if not sseqid in blastp:
-		blastp[sseqid] = []
-	pident = float(line.split("\t")[2])
-	evalue = float(line.split("\t")[13])
-	qcovs = float(line.split("\t")[12])
-	blastp[sseqid].append(pident)
-	blastp[sseqid].append(evalue)
-	blastp[sseqid].append(qcovs)
-print(blastp)
+# os.system("blastp -query " + fastap_orf + " -subject " + sys.argv[1].replace(".dnd",".prot.fas") + 
+# 		" -subject_besthit -outfmt \"6 qseqid sseqid pident length mismatch gapopen qstart qend qlen sstart send slen qcovs evalue bitscore\" >  " + 
+# 		fastap_orf.replace(".fa",".blastp.out"))
+# # read blastp results
+# for line in open(fastap_orf.replace(".fa",".blastp.out")):
+# 	sseqid = line.split("\t")[1]
+# 	if not sseqid in blastp:
+# 		blastp[sseqid] = []
+# 	pident = float(line.split("\t")[2])
+# 	evalue = float(line.split("\t")[13])
+# 	qcovs = float(line.split("\t")[12])
+# 	blastp[sseqid].append(pident)
+# 	blastp[sseqid].append(evalue)
+# 	blastp[sseqid].append(qcovs)
+# print(blastp)
 
 # estimate the presence of intact ORF
 for last_sp in ancestor:
@@ -137,7 +137,7 @@ for last_sp in ancestor:
 		for n2 in str(fa[old_anc]).replace("-","").replace("X","*"):
 			if (n2 == "M") and (op == -1):
 				op = 1
-			if n2 == "*":
+			elif n2 == "*":
 				if op > max_op[last_sp]:
 					max_op[last_sp] = op
 				op = -1
@@ -150,8 +150,8 @@ for last_sp in ancestor:
 		except:
 			pass
 
-	# >= 70% of the sequence did not contain stop condons truncating the ORF and ATG translation initiation site (TIS) was present
-	if (max_op[last_sp] >= 70) and (int(tis[last_sp]) >= 2):
+	# >= 70% of the sequence did not contain stop condons truncating the ORF
+	if (max_op[last_sp] >= 70):# and (int(tis[last_sp]) >= 2):
 		max_st_cons = order[last_sp]
 		ev[last_sp] = "FIXED"
 	# stop condons truncating the ORF resulting in < 70% of the ORF
@@ -159,16 +159,16 @@ for last_sp in ancestor:
 		ev[last_sp] = "ABSENT"
 
 	# protein conservation from blastp
-	if old_anc in blastp:
-		# if identity >= 50 and evalue <= 1e-5 and query coverage per subject (alignment length/subject length) >= 70% and the intact ORF is present
-		if (blastp[old_anc][0] >= 50) and (blastp[old_anc][1] <= float(1e-5)) and (blastp[old_anc][2] >= 70) and ev[last_sp] == "FIXED":
-			max_pt_cons = order[last_sp]
-			cons[old_anc] = "CONSERVED"
-		else:
-			cons[old_anc] = "DISSIMILAR"
-	else:
-		blastp[old_anc] = []
-		cons[old_anc] = "DISSIMILAR"
+	# if old_anc in blastp:
+	# 	# if identity >= 50 and evalue <= 1e-5 and query coverage per subject (alignment length/subject length) >= 70% and the intact ORF is present
+	# 	if (blastp[old_anc][0] >= 50) and (blastp[old_anc][1] <= float(1e-5)) and (blastp[old_anc][2] >= 70) and ev[last_sp] == "FIXED":
+	# 		max_pt_cons = order[last_sp]
+	# 		cons[old_anc] = "CONSERVED"
+	# 	else:
+	# 		cons[old_anc] = "DISSIMILAR"
+	# else:
+	# 	blastp[old_anc] = []
+	# 	cons[old_anc] = "DISSIMILAR"
 	
 	max_sy_cons = order[last_sp]
 
@@ -219,7 +219,7 @@ for last_sp in ancestor:
 		except:
 			pass
 
-		if (max_op2 >= 70) and (int(tis2) >= 2):
+		if (max_op2 >= 70):# and (int(tis2) >= 2):
 			if ev[last_sp] == "ABSENT":
 				ev[last_sp] = "GAINED"
 				count[0] += 1
@@ -233,12 +233,12 @@ for last_sp in ancestor:
 		# estimate the conservation of the ortholog peptide sequences
 
 	#Write output
-	l = name + "\t" + last_sp + "\t" + order[last_sp] + "\t" + order[last_sp] + "\t" + old_anc + "\t" + str(tis[last_sp]) + "\t" + str(max_op[last_sp]) + "\t" + ev[last_sp] + "\t" + str(blastp[old_anc]) + "\t" + cons[old_anc] + "\t" + str(fa[old_anc]).replace("-","").replace("X","*") + "\n"
+	l = name + "\t" + last_sp + "\t" + order[last_sp] + "\t" + order[last_sp] + "\t" + old_anc + "\t" + str(tis[last_sp]) + "\t" + str(max_op[last_sp]) + "\t" + ev[last_sp] + "\t" + str(fa[old_anc]).replace("-","").replace("X","*") + "\n"
 	outp.write(l.replace("W\n","\n"))
 	outn.write(">" + name + "--" + last_sp + "\n" + str(fan[old_anc].seq) + "\n")	
 
 
-outh.write(name + "\thg38\t" + str(max_st_cons) + "\t" + str(max_sy_cons) + "\t" + str(count[0]) + "\t" + str(count[1]) + "\t" + str(count[2]) + "\t" + str(denovo) + "\t" + str(max_pt_cons) + "\t" + str(fa["hg38"]).replace("-","").replace("X","") + "\n")
+outh.write(name + "\thg38\t" + str(max_st_cons) + "\t" + str(max_sy_cons) + "\t" + str(count[0]) + "\t" + str(count[1]) + "\t" + str(count[2]) + "\t" + str(denovo) + "\t" + str(fa["hg38"]).replace("-","").replace("X","") + "\n")
 
 outn.write(">" + name + "--hg38\n" + str(fan["hg38"].seq) + "\n")
 
