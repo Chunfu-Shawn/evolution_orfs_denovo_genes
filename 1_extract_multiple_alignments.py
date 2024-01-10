@@ -261,7 +261,7 @@ for count,orf in enumerate(orfs):
 			sq = str(Seq(orf_seq[sp][0]).reverse_complement())
 		# high coverage
 		if len(sq)/len(orf_seq["hg38"][0]) >= 0.95:
-			out1.write(">" + orf + " " + orfs[orf].gene  + " " + sp + " " + m + "\n" + str(Seq(sq.replace("-","")).translate(cds=False)) + "\n")
+			out1.write(">" + orf + "_" + orfs[orf].gene  + "_" + sp + "_" + m + "\n" + str(Seq(sq.replace("-","")).translate(cds=False)) + "\n")
 			out2.write(">" + sp + "\n" + sq + "\n")
 			t2 = ""
 			if(len(set(orf_seq[sp][3]))!=1):

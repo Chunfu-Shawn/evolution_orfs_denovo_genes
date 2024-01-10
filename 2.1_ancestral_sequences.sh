@@ -15,9 +15,9 @@ done
 [ -f $3.prot.ancestors ] && rm $3.prot.ancestors
 [ -f $3.nucl.ancestors ] && rm $3.nucl.ancestors
 
-echo -e 'orf_id\tsp\tev_age\tsyn_age\tgained\tgained_convergent\tlost\tdenovo\tprotein_cons\teq' > $3.ancestors
-echo -e 'orf_id\tsp\tev_age\tsyn_age\tbranch\tTIS\tmaxORF\tconv\tblastp\tprotein_cons\tseq' > $3.prot.ancestors
+echo -e 'orf_id\tsp\tev_age\tsyn_age\tgained\tgained_convergent\tlost\tdenovo\tseq' > $3.ancestors
+echo -e 'orf_id\tsp\tev_age\tsyn_age\tbranch\tTIS\tmaxORF\tconv\tseq' > $3.prot.ancestors
 for f in $1/prank/*best.anc.dnd; 
 do 
-    python3 parsing_ancestors.py $f $3 $4
+    python3 2.2_parsing_ancestors.py $f $3 $4
 done
