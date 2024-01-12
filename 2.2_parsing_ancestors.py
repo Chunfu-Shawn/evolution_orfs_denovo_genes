@@ -15,11 +15,11 @@ import os.path
 # assign each species to the lineage
 order = {}
 for sp in ("panTro5","panPan2","gorGor5","ponAbe2","nomLeu3"):
-	order[sp] = "hominidae"
+	order[sp] = "hominoid"
 for sp in ("rheMac8","macFas5","macNem1","papAnu3","manLeu1","cerAty1","chlSab2","nasLar1","rhiRox1","rhiBie1","colAng1","HLpilTep1"):
 	order[sp] = "catarrhini"
 for sp in ("calJac3","aotNan1","saiBol1","cebCap1"):
-	order[sp] = "simiiforms"
+	order[sp] = "simiiformes"
 for sp in ("tarSyr2","otoGar3","micMur3","proCoq1"):
 	order[sp] = "primates"
 for sp in ("galVar1", "eulMac1","eulFla1"):
@@ -150,8 +150,8 @@ for last_sp in ancestor:
 		except:
 			pass
 
-	# >= 70% of the sequence did not contain stop condons truncating the ORF
-	if (max_op[last_sp] >= 70):# and (int(tis[last_sp]) >= 2):
+	# >= 70% of the sequence did not contain stop condons truncating the ORF and a conserved ATG start condon
+	if (max_op[last_sp] >= 70) and (int(tis[last_sp]) >= 2):
 		max_st_cons = order[last_sp]
 		ev[last_sp] = "FIXED"
 	# stop condons truncating the ORF resulting in < 70% of the ORF
@@ -207,8 +207,6 @@ for last_sp in ancestor:
 			if (n2 == "M") and (op == -1):
 				op = 1
 			if n2 == "*":
-				if op > max_op[last_sp]:
-					max_op[last_sp] = op
 				op = -1
 			elif op != -1:
 				op += 1
@@ -219,7 +217,7 @@ for last_sp in ancestor:
 		except:
 			pass
 
-		if (max_op2 >= 70):# and (int(tis2) >= 2):
+		if (max_op2 >= 70) and (int(tis2) >= 2):
 			if ev[last_sp] == "ABSENT":
 				ev[last_sp] = "GAINED"
 				count[0] += 1

@@ -21,14 +21,14 @@ args = parser.parse_args()
 
 # Main
 # assign each species to the lineage
-lineages = ["human","hominidae","catarrhini","simiiforms","primates","primatomorpha","euarchontoglires","boreoeutheria","placentalia","mammal"]
+lineages = ["human","hominoid","catarrhini","simiiformes","primates","primatomorpha","euarchontoglires","boreoeutheria","placentalia","mammal"]
 order = {"hg38":"human"}
 for sp in ("panTro5","panPan2","gorGor5","ponAbe2","nomLeu3"):
-	order[sp] = "hominidae"
+	order[sp] = "hominoid"
 for sp in ("rheMac8","macFas5","macNem1","papAnu3","manLeu1","cerAty1","chlSab2","nasLar1","rhiRox1","rhiBie1","colAng1","HLpilTep1"):
 	order[sp] = "catarrhini"
 for sp in ("calJac3","aotNan1","saiBol1","cebCap1"):
-	order[sp] = "simiiforms"
+	order[sp] = "simiiformes"
 for sp in ("tarSyr2","otoGar3","micMur3","proCoq1"):
 	order[sp] = "primates"
 for sp in ("galVar1", "eulMac1","eulFla1"):
@@ -50,7 +50,7 @@ for sp in ("loxAfr3","triMan1","HLproCap2","chrAsi1","echTel2","eleEdw1","oryAfe
 for sp in ("monDom5","sarHar1","HLphaCin1","ornAna2"): #nonplacental+rest
 	order[sp] = "mammal"
 
-# Generate all truncated protein
+# Generate all truncated protein if start is a ATG
 prot_ort = args.prot_dir + "/orfs/*.fa"
 for file in glob.glob(prot_ort):
 	s = ""
@@ -64,8 +64,8 @@ for file in glob.glob(prot_ort):
 			species = s.split("_")[2]
 		else:
 			for n,c in enumerate(str(line).rstrip("\n")):
-				# if M
-				if (c == "M") and (new == -1):
+				# if M 
+				if (c == "M") and (new == -1) and (n <= 2): # in-frame window 6 nt downstream
 					outs.write(">" + s + "_" + str(n) + "\n")
 					new = 1
 					tru_seq += c
@@ -80,7 +80,7 @@ for file in glob.glob(prot_ort):
 					tru_seq += c
 					new = -1
 					outs.write(tru_seq + "\n")
-				elif new != -1:
+				elif new == 1:
 					tru_seq += c
 	outs.close()
 
@@ -124,5 +124,5 @@ for file in glob.glob(prot_ort):
 	evalue = blastp[far_sp][1]
 	qcovs = blastp[far_sp][2]
 	out.write(orf_id + "\t" + lineages[far_idx] + "\t" + str(far_sp) + "\t" + str(pident) + "\t" + str(evalue) + "\t" + str(qcovs) + "\n")
-	
+
 out.close()
