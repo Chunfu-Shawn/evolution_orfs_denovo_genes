@@ -38,8 +38,12 @@ for sp in boreoeutheria: #previous+euarchontoglires
 	order[sp] = "boreoeutheria"
 for sp in ("loxAfr3","triMan1","HLproCap2","chrAsi1","echTel2","eleEdw1","oryAfe1","dasNov3","HLchoHof2"): #atlantogenata +boro
 	order[sp] = "placentalia"
+for sp in ("monDom5","sarHar1","HLphaCin1"): #nonplacental+rest
+	order[sp] = "mammal"
 for sp in ("monDom5","sarHar1","HLphaCin1","ornAna2"): #nonplacental+rest
 	order[sp] = "mammal"
+for sp in ("ornAna2"): #platypus
+	order[sp] = "platypus"
 
 # main
 tree = sys.argv[1] #prot tree best.anc.dnd
