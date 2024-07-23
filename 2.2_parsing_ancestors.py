@@ -1,8 +1,7 @@
 #! /usr/bin/python
 __author__="jruizor"
 __date__ ="$Nov 10, 2021 12:30:23 AM$"
-'''Check P-site translation of a set of ORFs (p-sites)
-'''
+
 
 import sys
 import subprocess
